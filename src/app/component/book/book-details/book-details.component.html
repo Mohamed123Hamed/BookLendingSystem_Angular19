@@ -12,6 +12,24 @@
             <a [routerLink]="['/books']" class="btn btn-secondary me-2">Back to List</a>
             <a [routerLink]="['/edite-book', book.id]" class="btn btn-primary me-2" *ngIf="isAdminUser">Edit</a>
             <button class="btn btn-danger" (click)="deleteBook()" *ngIf="isAdminUser">Delete</button>
+                        <button
+              *ngIf="book.isAvailable"
+              (click)="borrowBook(book.id)"
+              class="btn btn-success"
+            >
+              Borrow
+            </button>
+
+            <button
+              *ngIf="
+                !book.isAvailable &&
+                (book.borrowedByUserId === userId || !book.borrowedByUserId)
+              "
+              (click)="returnBook(book.id)"
+              class="btn btn-info"
+            >
+              Return
+            </button>
           
           </div>
         </div>

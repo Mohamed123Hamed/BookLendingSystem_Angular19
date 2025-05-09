@@ -14,6 +14,7 @@ import { AuthService } from '../../../auth/auth.service';
 })
 export class BookDetailsComponent implements OnInit {
   bookId!: any;
+  userId: string;
   book: any | null = null;
   isAdminUser: boolean = false;
   images: { [key: number]: string } = {
@@ -42,7 +43,9 @@ export class BookDetailsComponent implements OnInit {
     private toastr: ToastrService,
     public authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+      this.userId = this.authService.getUserId();
+  }
 
 
   ngOnInit(): void {
@@ -79,6 +82,55 @@ export class BookDetailsComponent implements OnInit {
       (error) => {
         this.toastr.error('Error deleting the book.');
       }
+    );
+  }
+
+
+    borrowBook(bookId: number): void {
+    const userId = this.authService.getUserId();
+
+    if (!this.authService.isLoggedIn()) {
+      this.toastr.error('You need to log in first.');
+      return;
+    }
+    
+      if (this.book.borrowedByUserId === userId) {
+    this.toastr.error('You have already borrowed this book.');
+    return;
+  }
+
+    const borrowData = { bookId, userId };
+    this.bookService.borrowBook(borrowData).subscribe(
+      (response) => {
+        if (response.succeeded) {
+          this.toastr.success(response.data || 'Book Borrow successfully!');
+          this.ngOnInit();
+        } else {
+          this.toastr.error(response.messages[0] || 'Could not borrow book.');
+        }
+      },
+      () => this.toastr.error('Failed to borrow the book.')
+    );
+  }
+
+  returnBook(bookId: number): void {
+    const userId = this.authService.getUserId();
+    if (!this.authService.isLoggedIn()) {
+      this.toastr.error('You need to log in first.');
+      return;
+    }
+
+    const returnData = { bookId, userId };
+    this.bookService.returnBook(returnData).subscribe(
+      (response) => {
+        if (response.succeeded) {
+          this.toastr.success(response.data || 'Book returned successfully!');
+          this.ngOnInit();
+        } else {
+          this.toastr.error(response.messages[0] || 'Could not return book.');
+        }
+      },
+      () => this.toastr.error('Failed to return the book.')
     );
   }
   

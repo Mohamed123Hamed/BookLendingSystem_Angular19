@@ -4,20 +4,19 @@ import { BookService } from '../book.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-book-list',
-  imports: [NgIf,RouterLink,NgClass],
+  imports: [NgIf, RouterLink, NgClass],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css'
+  styleUrl: './book-list.component.css',
 })
 export class BookListComponent {
   books = signal<BookList[]>([]);
   isAdminUser = false;
   userId: string;
   bookId!: any;
-
 
   images: { [key: number]: string } = {
     1: '/images/1.jpg ',
@@ -37,7 +36,6 @@ export class BookListComponent {
     15: 'images/6.jpg ',
     16: 'images/1.jpg ',
     17: 'images/2.jpg ',
-    
   };
 
   constructor(
@@ -59,7 +57,7 @@ export class BookListComponent {
       (data) => {
         const booksWithImages = data.map((book) => ({
           ...book,
-          image: this.images[book.id] || '/assets/images/default.jpg'
+          image: this.images[book.id] || '/assets/images/default.jpg',
         }));
         this.books.set(booksWithImages);
       },
@@ -83,20 +81,24 @@ export class BookListComponent {
   }
 
   borrowBook(bookId: number): void {
+    const userId = this.authService.getUserId();
+
     if (!this.authService.isLoggedIn()) {
       this.toastr.error('You need to log in first.');
       return;
     }
 
-    const borrowData = { bookId , userId: this.userId };
-
+    const borrowedBook = this.books().find(
+      (book) => book.borrowedByUserId === userId
+    );
+    const borrowData = { bookId, userId };
     this.bookService.borrowBook(borrowData).subscribe(
       (response) => {
         if (response.succeeded) {
-          this.toastr.success(response.messages[0]);
+          this.toastr.success(response.data || 'Book Borrow successfully!');
           this.loadBooks();
         } else {
-          this.toastr.error(response.messages[0]);
+          this.toastr.error(response.messages[0] || 'Could not borrow book.');
         }
       },
       () => this.toastr.error('Failed to borrow the book.')
@@ -104,15 +106,20 @@ export class BookListComponent {
   }
 
   returnBook(bookId: number): void {
-    const returnData = { bookId, userId: this.userId };
+    const userId = this.authService.getUserId();
+    if (!this.authService.isLoggedIn()) {
+      this.toastr.error('You need to log in first.');
+      return;
+    }
 
+    const returnData = { bookId, userId };
     this.bookService.returnBook(returnData).subscribe(
       (response) => {
         if (response.succeeded) {
-          this.toastr.success(response.messages[0]);
+          this.toastr.success(response.data || 'Book returned successfully!');
           this.loadBooks();
         } else {
-          this.toastr.error(response.messages[0]);
+          this.toastr.error(response.messages[0] || 'Could not return book.');
         }
       },
       () => this.toastr.error('Failed to return the book.')

@@ -39,7 +39,6 @@ export class AuthService {
   
     const payload = token.split('.')[1];
     const decoded = JSON.parse(atob(payload));
-    console.log('Decoded Token:', decoded);
   
     return decoded;
   }
@@ -59,10 +58,17 @@ export class AuthService {
     return localStorage.getItem('data'); 
   }
 
+  // getUserId(): string {
+  //   const decodedToken = this.getDecodedToken();
+  //   return decodedToken ? decodedToken.Id : '';
+  // }
   getUserId(): string {
-    const decodedToken = this.getDecodedToken();
-    return decodedToken ? decodedToken.userId : '';
-  }
+  const decodedToken = this.getDecodedToken();
+  return decodedToken 
+    ? decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] 
+    : '';
+}
+
 
   getUserRole(): string {
     const decodedToken = this.getDecodedToken();

@@ -7,24 +7,19 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { AuthInterceptor } from './auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: 
-  [
+  providers: [
     provideToastr(),
     provideAnimations(),
     provideRouter(
       routes,
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
-
-    provideHttpClient(withInterceptorsFromDi()),  
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
-    provideZoneChangeDetection({ eventCoalescing: true }),
-     provideRouter(routes),
-     provideHttpClient()
-    ]
-    
+    provideZoneChangeDetection({ eventCoalescing: true })
+  ]
 };

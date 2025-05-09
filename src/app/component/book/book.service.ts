@@ -50,17 +50,14 @@ export class BookService {
     return this._httpClient.get(this.apiUrl + `/${id}`);
   }
 
-
   borrowBook(borrowData: { bookId: number, userId: string }): Observable<any> {
     return this._httpClient.post(`${this.apiUrl}/borrow`, borrowData);
   }
 
-  
-  
   returnBook(returnData: { bookId: number, userId: string }): Observable<any> {
-    return this._httpClient.post(`${this.apiUrl}/return`, returnData);
-  }
-  
+  return this._httpClient.post(`${this.apiUrl}/return`, returnData);
+}
+
   
 
   
