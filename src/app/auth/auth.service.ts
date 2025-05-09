@@ -92,5 +92,21 @@ export class AuthService {
     }
     return null;
   }
+
+    getCurrentUserRole(): string {
+    const decoded = this.getDecodedToken();
+    if (decoded && decoded.role) {
+      return decoded.role;
+    }
+    return '';
+  }
+
+   getUsers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/User/GetUsers`);
+  }
+
+    toggleAdminRole(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/User/ToggleAdminRole`, { email });
+  }
   
 }

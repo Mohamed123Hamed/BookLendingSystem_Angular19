@@ -13,6 +13,9 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="/add-book" *ngIf="authService.isAdmin()">Add Book</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/user-list" *ngIf="authService.isAdmin()">Users</a>
+          </li>
           
         <li class="nav-item" *ngIf="!authService.isLoggedIn()">
           <a class="nav-link" routerLink="/login">Login</a>
