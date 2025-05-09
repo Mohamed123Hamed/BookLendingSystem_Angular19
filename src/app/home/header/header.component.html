@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fs-3" href="#">📚 Book Lending</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+        <ul class="navbar-nav fs-5">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/books">Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/add-book" *ngIf="authService.isAdmin()">Add Book</a>
+          </li>
+          
+        <li class="nav-item" *ngIf="!authService.isLoggedIn()">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+
+        <li class="nav-item" *ngIf="authService.isLoggedIn()">
+          <button class="nav-link" (click)="logout()">Logout</button>
+        </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="hero-section text-white text-center d-flex flex-column justify-content-center align-items-center">
+    <h1 class="display-3 fw-bold">Welcome to Our Book Lending System 📖</h1>
+    <p class="lead mt-3">Borrow, Lend & Explore a world of books effortlessly!</p>
+    <a routerLink="/books" class="btn btn-primary btn-lg mt-4">Browse Books</a>
+  </div>
+  

@@ -1,0 +1,61 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { Router, RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+
+@Component({
+  selector: 'app-login',
+  imports: [ReactiveFormsModule, NgIf],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
+})
+export class LoginComponent { 
+  loginForm!: FormGroup;
+  errorMessage: string = "";
+  loading: boolean = false;
+
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+
+    const savedEmail = localStorage.getItem('email');
+  const savedPassword = localStorage.getItem('password');
+
+  if (savedEmail && savedPassword) {
+    this.loginForm.patchValue({
+      email: savedEmail,
+      password: savedPassword
+    });
+  }
+  }
+
+  onSubmit(): void {
+    this.loginForm.markAsTouched();
+    if (this.loginForm.valid) {
+      this.loading = true;
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (response) => {
+          console.log(response);
+          if (response.succeeded) {
+            this.authService.saveToken(response.data);
+            this.router.navigate(['/home']);
+          } else {
+            this.errorMessage = response.message;
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          this.errorMessage = error.error.message;
+          this.loading = false;
+        }
+      });
+    }
+  }
+}

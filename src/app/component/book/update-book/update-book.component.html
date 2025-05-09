@@ -1,0 +1,25 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card shadow-lg p-4" style="width: 500px;">
+    <h3 class="text-center mb-4">Edit Book</h3>
+
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="title" class="form-label">Book Title</label>
+        <input type="text" id="title" formControlName="title" class="form-control" placeholder="Enter book title">
+        <div *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched" class="text-danger">
+          Title is required.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="author" class="form-label">Author</label>
+        <input type="text" id="author" formControlName="author" class="form-control" placeholder="Enter author name">
+        <div *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched" class="text-danger">
+          Author is required.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" [disabled]="bookForm.invalid">Update Book</button>
+    </form>
+  </div>
+</div>

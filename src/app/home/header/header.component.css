@@ -1,0 +1,7 @@
+.hero-section {
+    background: url('/images/1.jpg') no-repeat center center;
+    background-size: cover;
+    height: 50vh;
+    padding: 0px 20px;
+    margin-top: 0px;
+  }

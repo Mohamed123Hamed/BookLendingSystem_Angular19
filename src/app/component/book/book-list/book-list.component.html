@@ -1,0 +1,38 @@
+@if (books()) {
+  <div class="container mt-5">
+    <div class="row">
+      @for (book of books(); track $index) {
+      <div class="col-md-4 mt-3">
+        <div class="card shadow-lg">
+          <img [src]="book.image" class="card-img-top book-image-detail" alt="book cover">
+          <div class="card-body text-center">
+            <h3 class="card-title">{{ book.title }}</h3>
+            <p class="card-text text-muted">By {{ book.author }}</p>
+            <p><strong>Availability:</strong>
+              <span [ngClass]="book.isAvailable ? 'text-success' : 'text-danger'">
+                {{ book.isAvailable ? 'Available' : 'Not Available' }}
+              </span>
+            </p>
+  
+            <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+              <a [routerLink]="['/book/'+ book.id]" class="btn btn-secondary">view details</a>
+              
+              <a *ngIf="isAdminUser" [routerLink]="['/edite-book', book.id]" class="btn btn-primary">Edit</a>
+              
+              <button *ngIf="isAdminUser" (click)="deleteBook()" class="btn btn-danger">Delete</button>
+  
+              <button *ngIf=" book.isAvailable" (click)="borrowBook(book.id)" class="btn btn-success">Borrow</button>
+  
+              <button *ngIf="!book.isAvailable && (book.borrowedByUserId === userId || !book.borrowedByUserId)"
+               (click)="returnBook(book.id)" class="btn btn-info">Return</button>
+
+            </div>
+  
+          </div>
+        </div>
+      </div>
+    }
+    </div>
+  </div>
+  }
+  
