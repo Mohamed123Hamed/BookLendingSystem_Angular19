@@ -20,10 +20,7 @@
             </div>
           </div>
         </div>
-  
-        <div *ngIf="errorMessage" class="error-message text-danger text-center mb-3">
-          {{ errorMessage }}
-        </div>
+
   
         <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
           {{ loading ? 'Logging in...' : 'Login' }}

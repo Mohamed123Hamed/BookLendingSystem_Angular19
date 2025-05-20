@@ -48,8 +48,8 @@ export class RegisterComponent implements OnInit {
         (response) => {
           this.toastr.success('Registration successful!');
 
-          localStorage.setItem('email', this.registerForm.value.email);
-          localStorage.setItem('password', this.registerForm.value.password);
+          // localStorage.setItem('email', this.registerForm.value.email);
+          // localStorage.setItem('password', this.registerForm.value.password);
           
           this.router.navigate(['/login']);
         },

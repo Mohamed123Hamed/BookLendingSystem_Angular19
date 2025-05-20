@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,12 @@ import { NgIf } from '@angular/common';
 })
 export class LoginComponent { 
   loginForm!: FormGroup;
-  errorMessage: string = "";
   loading: boolean = false;
 
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService); 
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -42,17 +43,22 @@ export class LoginComponent {
       this.loading = true;
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log(response);
           if (response.succeeded) {
             this.authService.saveToken(response.data);
+            this.toastr.success('تم تسجيل الدخول بنجاح ✨');
             this.router.navigate(['/home']);
-          } else {
-            this.errorMessage = response.message;
+          } 
+          else 
+          {
+          //  this.toastr.error(response.messages); // display one error
+          this.toastr.error(response.messages.join('<br>'), 'خطأ', { enableHtml: true }); // dislay list of errors
+
           }
           this.loading = false;
         },
         error: (error) => {
-          this.errorMessage = error.error.message;
+          this.toastr.error(error.error.message || 'حدث خطأ غير متوقع', 'خطأ');
+
           this.loading = false;
         }
       });
